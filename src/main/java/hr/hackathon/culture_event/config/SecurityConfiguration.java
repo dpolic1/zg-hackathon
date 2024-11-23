@@ -25,7 +25,7 @@ import java.util.List;
 public class SecurityConfiguration {
 
   public static final List<String> UNAUTHENTICATED_ENDPOINTS =
-      List.of("/users/register", "/users/login", "organizer-types/**", "/swagger-ui/**", "/v3/api-docs/**");
+      List.of("/users/register", "/users/login", "organizer-types/**", "event-types/**", "/swagger-ui/**", "/v3/api-docs/**");
   public static final List<String> ADMIN_ENDPOINTS = List.of("example/test-admin");
 
   private final JwtTokenFilter jwtFilter;
