@@ -6,8 +6,8 @@ import hr.hackathon.culture_event.feature.event.Event;
 import hr.hackathon.culture_event.feature.event.EventRepository;
 import hr.hackathon.culture_event.feature.event_category.EventCategory;
 import hr.hackathon.culture_event.feature.event_category.EventCategoryRepository;
-import hr.hackathon.culture_event.feature.event_frequency.EventRecurrence;
-import hr.hackathon.culture_event.feature.event_frequency.EventRecurrenceRepository;
+import hr.hackathon.culture_event.feature.event_recurrence.EventRecurrence;
+import hr.hackathon.culture_event.feature.event_recurrence.EventRecurrenceRepository;
 import hr.hackathon.culture_event.feature.event_type.EventType;
 import hr.hackathon.culture_event.feature.event_type.EventTypeRepository;
 import hr.hackathon.culture_event.feature.neighbourhood.Neighbourhood;
@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

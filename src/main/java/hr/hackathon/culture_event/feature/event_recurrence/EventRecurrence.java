@@ -1,4 +1,4 @@
-package hr.hackathon.culture_event.feature.event_frequency;
+package hr.hackathon.culture_event.feature.event_recurrence;
 
 import hr.hackathon.culture_event.feature.event.Event;
 import jakarta.persistence.*;

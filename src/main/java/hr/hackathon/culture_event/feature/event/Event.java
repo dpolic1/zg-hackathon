@@ -1,9 +1,8 @@
 package hr.hackathon.culture_event.feature.event;
 
 import hr.hackathon.culture_event.feature.age_group.AgeGroup;
-import hr.hackathon.culture_event.feature.creation_audit.CreationAudit;
 import hr.hackathon.culture_event.feature.event_category.EventCategory;
-import hr.hackathon.culture_event.feature.event_frequency.EventRecurrence;
+import hr.hackathon.culture_event.feature.event_recurrence.EventRecurrence;
 import hr.hackathon.culture_event.feature.event_type.EventType;
 import hr.hackathon.culture_event.feature.neighbourhood.Neighbourhood;
 import hr.hackathon.culture_event.feature.organizer.Organizer;
