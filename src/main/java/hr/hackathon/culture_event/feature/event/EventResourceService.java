@@ -17,7 +17,7 @@ public class EventResourceService {
   private final EventMapper eventMapper;
 
   public List<EventResponse> findAll(){
-    List<Event> events = eventRepository.findAll();
+    List<Event> events = eventRepository.findAllLimit50();
     return events.stream().map(eventMapper::toResponse).toList();
   }
 
