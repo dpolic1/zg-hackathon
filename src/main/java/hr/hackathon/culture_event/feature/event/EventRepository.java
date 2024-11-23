@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Query("SELECT e FROM Event e ORDER BY e.id DESC LIMIT 50")
-    List<Event> findAllLimit50();
-
+  @Query("SELECT e FROM Event e WHERE e.eventImageUrl IS NOT NULL ORDER BY e.id DESC LIMIT 50")
+  List<Event> findAllLimit50();
 }

@@ -130,6 +130,7 @@ public class ExcelParser {
       if (ageGroups != null) {
         ageGroups.forEach(a -> a.addChildToList(event));
       }
+      event.setEventImageUrl(getStringCellValue(row.getCell(23)));
       events.add(event);
     }
     eventRepository.saveAll(events);
