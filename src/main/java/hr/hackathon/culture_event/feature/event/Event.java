@@ -80,7 +80,7 @@ public class Event {
 
   private String eventImageUrl;
 
-  private String price;
+  private Double price;
 
   private Integer ticketAmount;
 

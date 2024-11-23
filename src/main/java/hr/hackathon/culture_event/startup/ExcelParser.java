@@ -67,7 +67,13 @@ public class ExcelParser {
       Event event = new Event();
 
       // Read each column and set values in the Event entity
-      event.setShortName(getStringCellValue(row.getCell(0)));
+
+      String shortName = getStringCellValue(row.getCell(0));
+
+      if (shortName == null || shortName.isEmpty()) {
+        continue;
+      }
+      event.setShortName(shortName);
       event.setLongName(getStringCellValue(row.getCell(1)));
       event.setEnglishName(getStringCellValue(row.getCell(2)));
 
@@ -98,8 +104,8 @@ public class ExcelParser {
       event.setChildFriendlyFlag(getBooleanValue(getStringCellValue(row.getCell(9))));
       event.setDescription(getStringCellValue(row.getCell(10)));
       event.setDescriptionEnglish(getStringCellValue(row.getCell(11)));
-      event.setPrice(getStringCellValue(row.getCell(12)));
-      event.setTicketAmount((int) getNumericCellValue(row.getCell(13)));
+      event.setPrice(parsePrice(getStringCellValue(row.getCell(12))));
+      event.setTicketAmount(getNumericCellValue(row.getCell(13)));
       event.setNumberedTicketsFlag(getBooleanValue(getStringCellValue(row.getCell(14))));
       event.setSignUpRequiredFlag(getBooleanValue(getStringCellValue(row.getCell(15))));
       event.setAvailableInCroatianFlag(getBooleanValue(getStringCellValue(row.getCell(16))));
@@ -160,10 +166,10 @@ public class ExcelParser {
     return null; // Return null if parsing fails or cell is empty
   }
 
-  private double getNumericCellValue(Cell cell) {
+  private Integer getNumericCellValue(Cell cell) {
     return (cell != null && cell.getCellType() == CellType.NUMERIC)
-        ? cell.getNumericCellValue()
-        : 0.0;
+        ? (int) cell.getNumericCellValue()
+        : null;
   }
 
   private Organizer findByName(List<Organizer> organizers, String name) {
@@ -210,6 +216,14 @@ public class ExcelParser {
       return allAgeGroups.stream()
           .filter(a -> Arrays.asList(ageGroupNames).contains(a.getName()))
           .toList();
+    }
+    return null;
+  }
+
+  private Double parsePrice(String price) {
+    if (price != null && !price.isEmpty()) {
+      price = price.substring(1).replace(",", "");
+      return Double.parseDouble(price);
     }
     return null;
   }

@@ -14,7 +14,7 @@ CREATE TABLE events
     description                TEXT,
     description_english        TEXT,
     event_image_url            TEXT,
-    price                      varchar(50),
+    price                      DECIMAL,
     ticket_amount              INT,
     numbered_tickets_flag      BOOLEAN,
     sign_up_required_flag      BOOLEAN,
