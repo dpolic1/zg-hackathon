@@ -34,30 +34,32 @@ public interface EventRepository extends JpaRepository<Event, Long> {
   List<Event> searchEvents(@Param("searchTerm") String searchTerm);
 
   @Query(
-      """
-        SELECT e FROM Event e
+      value =
+          """
+        SELECT e.* FROM events e
+                LEFT JOIN organizers o ON e.organizer_id = o.id
+                LEFT JOIN neighbourhoods n ON e.neighbourhood_id = n.id
+                LEFT JOIN events_categories ec ON ec.event_id = e.id
+                LEFT JOIN event_categories c ON ec.category_id = c.id
         WHERE
             (:searchTerm IS NULL OR
-             LOWER(e.shortName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(e.longName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(e.englishName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+             LOWER(e.short_name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+             LOWER(e.long_name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+             LOWER(e.english_name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
              LOWER(e.location) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
              LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(e.descriptionEnglish) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(e.organizer.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
-             LOWER(e.neighbourhood.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+             LOWER(e.description_english) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+             LOWER(o.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+             LOWER(n.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
             ) AND
-            (:fromDate IS NULL OR e.startDate >= :fromDate) AND
-            (:toDate IS NULL OR e.startDate <= :toDate) AND
+/*            (:fromDate IS NULL OR e.start_date >= :fromDate) AND
+            (:toDate IS NULL OR e.start_date <= :toDate) AND*/
             (:maxPrice IS NULL OR e.price <= :maxPrice) AND
-            (:categoryId IS NULL OR EXISTS (
-                SELECT 1 FROM e.eventCategories ec WHERE ec.id = :categoryId
-            ))
-        """)
+            (:categoryId IS NULL OR ec.category_id = :categoryId)
+    """,
+      nativeQuery = true)
   List<Event> searchEventsWithFilters(
       @Param("searchTerm") String searchTerm,
-      @Param("fromDate") LocalDateTime fromDate,
-      @Param("toDate") LocalDateTime toDate,
       @Param("maxPrice") Double maxPrice,
       @Param("categoryId") Long categoryId);
 }

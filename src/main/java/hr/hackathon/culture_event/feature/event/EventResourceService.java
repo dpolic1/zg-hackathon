@@ -36,78 +36,22 @@ public class EventResourceService {
       LocalDateTime toDate,
       Double maxPrice,
       Long categoryId) {
-    List<Event> events = eventRepository.findAllWithCategories();
-
-    String searchTermLower =
-        (searchTerm != null && !searchTerm.isEmpty()) ? searchTerm.toLowerCase() : null;
 
     List<Event> searchedEvents =
-        events.parallelStream()
-            .filter(
-                event -> {
-                  // Only perform search filtering if searchTermLower is provided
-                  if (searchTermLower != null) {
-                    String searchTermLowerCopy =
-                        searchTermLower
-                            .toLowerCase(); // Use the precomputed search term for comparison
+        eventRepository.searchEventsWithFilters(searchTerm, maxPrice, categoryId);
 
-                    return (event.getShortName() != null
-                            && event.getShortName().toLowerCase().contains(searchTermLowerCopy))
-                        || (event.getLongName() != null
-                            && event.getLongName().toLowerCase().contains(searchTermLowerCopy))
-                        || (event.getEnglishName() != null
-                            && event.getEnglishName().toLowerCase().contains(searchTermLowerCopy))
-                        || (event.getLocation() != null
-                            && event.getLocation().toLowerCase().contains(searchTermLowerCopy))
-                        || (event.getDescription() != null
-                            && event.getDescription().toLowerCase().contains(searchTermLowerCopy))
-                        || (event.getDescriptionEnglish() != null
-                            && event
-                                .getDescriptionEnglish()
-                                .toLowerCase()
-                                .contains(searchTermLowerCopy))
-                        || (event.getOrganizer() != null
-                            && event.getOrganizer().getName() != null
-                            && event
-                                .getOrganizer()
-                                .getName()
-                                .toLowerCase()
-                                .contains(searchTermLowerCopy))
-                        || (event.getNeighbourhood() != null
-                            && event.getNeighbourhood().getName() != null
-                            && event
-                                .getNeighbourhood()
-                                .getName()
-                                .toLowerCase()
-                                .contains(searchTermLowerCopy));
-                  }
-                  return true; // If searchTerm is null or empty, return all events
-                })
-            .filter(
-                event -> {
-                  // Apply additional filters (fromDate, toDate, maxPrice, categoryId)
-                  if (fromDate != null && event.getStartDate().isBefore(fromDate)) {
-                    return false;
-                  }
-                  if (toDate != null && event.getStartDate().isAfter(toDate)) {
-                    return false;
-                  }
-                  if(event.getPrice() == null){
-                    return true;
-                  }
-                  if (maxPrice != null && event.getPrice() > maxPrice) {
-                    return false;
-                  }
-                  if (categoryId != null) {
-                    return event.getEventCategories().stream()
-                        .anyMatch(category -> category.getId().equals(categoryId));
-                  }
-                  return true; // If no additional filters, return true
-                })
-            .toList();
-
-    return searchedEvents.stream().map(eventMapper::toResponse).toList();
-    /*return eventRepository.searchEventsWithFilters(
-    searchTerm, fromDate, toDate, maxPrice, categoryId);*/
+    return searchedEvents.stream()
+        .filter(
+            event -> {
+              if (fromDate != null && event.getStartDate().isBefore(fromDate)) {
+                return false;
+              }
+              if (toDate != null && event.getStartDate().isAfter(toDate)) {
+                return false;
+              }
+              return true;
+            })
+        .map(eventMapper::toResponse)
+        .toList();
   }
 }
