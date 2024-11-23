@@ -1,4 +1,4 @@
-package hr.hackathon.culture_event.feature.event_type;
+package hr.hackathon.culture_event.feature.event_category;
 
 import hr.hackathon.culture_event.feature.event.Event;
 import jakarta.persistence.*;
@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "event_types")
-public class EventType {
+@Table
+public class EventCategory {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +19,6 @@ public class EventType {
 
   private String name;
 
-  @OneToMany private List<Event> events;
+  @OneToMany
+  private List<Event> events;
 }

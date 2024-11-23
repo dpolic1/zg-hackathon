@@ -1,4 +1,4 @@
-package hr.hackathon.culture_event.feature.event_type;
+package hr.hackathon.culture_event.feature.neighbourhood;
 
 import hr.hackathon.culture_event.feature.event.Event;
 import jakarta.persistence.*;
@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "event_types")
-public class EventType {
+@Table(name = "neighbourhoods")
+public class Neighbourhood {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
