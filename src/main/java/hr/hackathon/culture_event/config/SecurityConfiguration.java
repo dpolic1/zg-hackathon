@@ -26,6 +26,7 @@ public class SecurityConfiguration {
 
   public static final List<String> UNAUTHENTICATED_ENDPOINTS =
       List.of(
+          "/users/generate-test-user",
           "/users/register",
           "/users/login",
           "organizer-types/**",

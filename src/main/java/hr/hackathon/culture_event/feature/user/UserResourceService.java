@@ -38,6 +38,16 @@ public class UserResourceService {
         .orElseThrow(() -> new ResponseStatusException(BAD_REQUEST, "User not found"));
   }
 
+  public UserLoginResponse generateTestUser() {
+    User user = new User();
+    user.setFirstName("Test");
+    user.setLastName("User");
+    user.setUsername("user" + System.currentTimeMillis());
+    user.setPassword(bCryptPasswordEncoder.encode("password"));
+    user.setRoles(Set.of(Role.ROLE_USER));
+    return createLoginResponse(userRepository.save(user));
+  }
+
   public UserLoginResponse login(UserLoginRequest loginRequest) {
     User user = findByUsername(loginRequest.getUsername());
     if (!bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {

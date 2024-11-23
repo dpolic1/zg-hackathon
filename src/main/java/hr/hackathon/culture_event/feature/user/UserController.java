@@ -18,6 +18,11 @@ public class UserController {
   private final UserMapper userMapper;
   private final AuditorConfig auditorConfig;
 
+  @GetMapping("/generate-test-user")
+  public UserLoginResponse testUser() {
+    return userResourceService.generateTestUser();
+  }
+
   @PostMapping("/login")
   public UserLoginResponse login(@RequestBody UserLoginRequest userLoginRequest) {
     return userResourceService.login(userLoginRequest);
