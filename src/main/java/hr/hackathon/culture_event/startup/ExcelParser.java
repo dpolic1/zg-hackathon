@@ -40,100 +40,99 @@ public class ExcelParser {
 
   public void parseExcel() throws IOException {
 
-    if (eventRepository.count() > 0) {
-      return;
+    if (!(eventRepository.count() > 0)) {
+      List<Organizer> organizers = organizerRepository.findAllWithChildObjects();
+      List<EventRecurrence> eventRecurrences = eventRecurrenceRepository.findAllWithChildObjects();
+      List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAllWithChildObjects();
+      List<EventCategory> allEventCategories = eventCategoryRepository.findAllWithChildObjects();
+      List<EventType> allEventTypes = eventTypeRepository.findAllWithChildObjects();
+      List<AgeGroup> allAgeGroups = ageGroupRepository.findAllWithChildObjects();
+
+      InputStream file = getClass().getClassLoader().getResourceAsStream("excel/Events.xlsx");
+      assert file != null;
+      Workbook workbook = new XSSFWorkbook(file);
+      Sheet sheet = workbook.getSheetAt(0); // Assuming data is in the first sheet
+
+      Iterator<Row> rowIterator = sheet.iterator();
+      rowIterator.next(); // Skip header row
+
+      List<Event> events = new ArrayList<>();
+
+      while (rowIterator.hasNext()) {
+        Row row = rowIterator.next();
+        Event event = new Event();
+
+        // Read each column and set values in the Event entity
+
+        String shortName = getStringCellValue(row.getCell(0));
+
+        if (shortName == null || shortName.isEmpty()) {
+          continue;
+        }
+        event.setShortName(shortName);
+        event.setLongName(getStringCellValue(row.getCell(1)));
+        event.setEnglishName(getStringCellValue(row.getCell(2)));
+
+        Organizer organizer = findByName(organizers, getStringCellValue(row.getCell(3)));
+        event.setOrganizer(organizer);
+        if (organizer != null) {
+          organizer.addChildToList(event);
+        }
+
+        event.setLocation(getStringCellValue(row.getCell(4)));
+
+        Neighbourhood neighbourhood =
+            findByNeighbourhood(neighbourhoods, getStringCellValue(row.getCell(5)));
+        event.setNeighbourhood(neighbourhood);
+        if (neighbourhood != null) {
+          neighbourhood.addChildToList(event);
+        }
+
+        EventRecurrence eventRecurrence =
+            findByRecurrence(eventRecurrences, getStringCellValue(row.getCell(6)));
+        event.setEventRecurrence(eventRecurrence);
+        if (eventRecurrence != null) {
+          eventRecurrence.addChildToList(event);
+        }
+
+        event.setStartDate(getLocalDateTime(row.getCell(7)));
+        event.setEndDate(getLocalDateTime(row.getCell(8)));
+        event.setChildFriendlyFlag(getBooleanValue(getStringCellValue(row.getCell(9))));
+        event.setDescription(getStringCellValue(row.getCell(10)));
+        event.setDescriptionEnglish(getStringCellValue(row.getCell(11)));
+        event.setPrice(parsePrice(getStringCellValue(row.getCell(12))));
+        event.setTicketAmount(getNumericCellValue(row.getCell(13)));
+        event.setNumberedTicketsFlag(getBooleanValue(getStringCellValue(row.getCell(14))));
+        event.setSignUpRequiredFlag(getBooleanValue(getStringCellValue(row.getCell(15))));
+        event.setAvailableInCroatianFlag(getBooleanValue(getStringCellValue(row.getCell(16))));
+        event.setAvailableInEnglishFlag(getBooleanValue(getStringCellValue(row.getCell(17))));
+        event.setSignUpEndDate(getLocalDateTime(row.getCell(18)));
+        event.setEventUrl(getStringCellValue(row.getCell(19)));
+
+        List<EventCategory> eventCategories =
+            parseCategories(allEventCategories, getStringCellValue(row.getCell(20)));
+        event.setEventCategories(eventCategories);
+        if (eventCategories != null) {
+          eventCategories.forEach(c -> c.addChildToList(event));
+        }
+
+        List<EventType> eventTypes = parseTypes(allEventTypes, getStringCellValue(row.getCell(21)));
+        event.setEventTypes(eventTypes);
+        if (eventTypes != null) {
+          eventTypes.forEach(t -> t.addChildToList(event));
+        }
+
+        List<AgeGroup> ageGroups =
+            parseAgeGroups(allAgeGroups, getStringCellValue(row.getCell(22)));
+        event.setAgeGroups(ageGroups);
+        if (ageGroups != null) {
+          ageGroups.forEach(a -> a.addChildToList(event));
+        }
+        event.setEventImageUrl(getStringCellValue(row.getCell(23)));
+        events.add(event);
+      }
+      eventRepository.saveAll(events);
     }
-
-    List<Organizer> organizers = organizerRepository.findAllWithChildObjects();
-    List<EventRecurrence> eventRecurrences = eventRecurrenceRepository.findAllWithChildObjects();
-    List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAllWithChildObjects();
-    List<EventCategory> allEventCategories = eventCategoryRepository.findAllWithChildObjects();
-    List<EventType> allEventTypes = eventTypeRepository.findAllWithChildObjects();
-    List<AgeGroup> allAgeGroups = ageGroupRepository.findAllWithChildObjects();
-
-    InputStream file = getClass().getClassLoader().getResourceAsStream("excel/Events.xlsx");
-    assert file != null;
-    Workbook workbook = new XSSFWorkbook(file);
-    Sheet sheet = workbook.getSheetAt(0); // Assuming data is in the first sheet
-
-    Iterator<Row> rowIterator = sheet.iterator();
-    rowIterator.next(); // Skip header row
-
-    List<Event> events = new ArrayList<>();
-
-    while (rowIterator.hasNext()) {
-      Row row = rowIterator.next();
-      Event event = new Event();
-
-      // Read each column and set values in the Event entity
-
-      String shortName = getStringCellValue(row.getCell(0));
-
-      if (shortName == null || shortName.isEmpty()) {
-        continue;
-      }
-      event.setShortName(shortName);
-      event.setLongName(getStringCellValue(row.getCell(1)));
-      event.setEnglishName(getStringCellValue(row.getCell(2)));
-
-      Organizer organizer = findByName(organizers, getStringCellValue(row.getCell(3)));
-      event.setOrganizer(organizer);
-      if (organizer != null) {
-        organizer.addChildToList(event);
-      }
-
-      event.setLocation(getStringCellValue(row.getCell(4)));
-
-      Neighbourhood neighbourhood =
-          findByNeighbourhood(neighbourhoods, getStringCellValue(row.getCell(5)));
-      event.setNeighbourhood(neighbourhood);
-      if (neighbourhood != null) {
-        neighbourhood.addChildToList(event);
-      }
-
-      EventRecurrence eventRecurrence =
-          findByRecurrence(eventRecurrences, getStringCellValue(row.getCell(6)));
-      event.setEventRecurrence(eventRecurrence);
-      if (eventRecurrence != null) {
-        eventRecurrence.addChildToList(event);
-      }
-
-      event.setStartDate(getLocalDateTime(row.getCell(7)));
-      event.setEndDate(getLocalDateTime(row.getCell(8)));
-      event.setChildFriendlyFlag(getBooleanValue(getStringCellValue(row.getCell(9))));
-      event.setDescription(getStringCellValue(row.getCell(10)));
-      event.setDescriptionEnglish(getStringCellValue(row.getCell(11)));
-      event.setPrice(parsePrice(getStringCellValue(row.getCell(12))));
-      event.setTicketAmount(getNumericCellValue(row.getCell(13)));
-      event.setNumberedTicketsFlag(getBooleanValue(getStringCellValue(row.getCell(14))));
-      event.setSignUpRequiredFlag(getBooleanValue(getStringCellValue(row.getCell(15))));
-      event.setAvailableInCroatianFlag(getBooleanValue(getStringCellValue(row.getCell(16))));
-      event.setAvailableInEnglishFlag(getBooleanValue(getStringCellValue(row.getCell(17))));
-      event.setSignUpEndDate(getLocalDateTime(row.getCell(18)));
-      event.setEventUrl(getStringCellValue(row.getCell(19)));
-
-      List<EventCategory> eventCategories =
-          parseCategories(allEventCategories, getStringCellValue(row.getCell(20)));
-      event.setEventCategories(eventCategories);
-      if (eventCategories != null) {
-        eventCategories.forEach(c -> c.addChildToList(event));
-      }
-
-      List<EventType> eventTypes = parseTypes(allEventTypes, getStringCellValue(row.getCell(21)));
-      event.setEventTypes(eventTypes);
-      if (eventTypes != null) {
-        eventTypes.forEach(t -> t.addChildToList(event));
-      }
-
-      List<AgeGroup> ageGroups = parseAgeGroups(allAgeGroups, getStringCellValue(row.getCell(22)));
-      event.setAgeGroups(ageGroups);
-      if (ageGroups != null) {
-        ageGroups.forEach(a -> a.addChildToList(event));
-      }
-      event.setEventImageUrl(getStringCellValue(row.getCell(23)));
-      events.add(event);
-    }
-    eventRepository.saveAll(events);
   }
 
   private String getStringCellValue(Cell cell) {
