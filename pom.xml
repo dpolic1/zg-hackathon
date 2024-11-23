@@ -105,6 +105,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- EXCEL -->
+			<!-- Apache POI for reading Excel files -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>5.2.3</version> <!-- Use the latest version -->
+			</dependency>
 
 		<!-- SECURITY -->
 		<dependency>

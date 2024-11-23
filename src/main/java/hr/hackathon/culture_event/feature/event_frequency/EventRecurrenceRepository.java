@@ -1,4 +1,4 @@
-package hr.hackathon.culture_event.feature.neighbourhood;
+package hr.hackathon.culture_event.feature.event_frequency;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface NeighbourhoodRepository extends JpaRepository<Neighbourhood, Long> {
+public interface EventRecurrenceRepository extends JpaRepository<EventRecurrence, Long> {
 
-  @Query("SELECT n FROM Neighbourhood n")
+  @Query("SELECT n FROM EventRecurrence n")
   @EntityGraph(attributePaths = {"events"})
-  List<Neighbourhood> findAllWithChildObjects();
+  List<EventRecurrence> findAllWithChildObjects();
 }

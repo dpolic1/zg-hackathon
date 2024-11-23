@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,5 +20,13 @@ public class Neighbourhood {
 
   private String name;
 
-  @OneToMany private List<Event> events;
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "neighbourhood")
+  private List<Event> events;
+
+  public void addChildToList(Event event) {
+    if (this.getEvents() == null) {
+      this.setEvents(new ArrayList<>());
+    }
+    this.getEvents().add(event);
+  }
 }

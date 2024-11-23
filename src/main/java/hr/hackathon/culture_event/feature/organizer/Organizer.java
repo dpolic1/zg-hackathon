@@ -6,12 +6,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name = "organizers")
 public class Organizer {
 
   @Id
@@ -27,7 +28,8 @@ public class Organizer {
       inverseJoinColumns = @JoinColumn(name = "organizer_type_id"))
   private List<OrganizerType> types;
 
-  @OneToMany private List<Event> events;
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
+  private List<Event> events;
 
   private String location;
 
@@ -40,4 +42,11 @@ public class Organizer {
   private Boolean disabilityEntranceFlag;
 
   private Boolean disabilityToiletFlag;
+
+  public void addChildToList(Event event) {
+    if (this.getEvents() == null) {
+      this.setEvents(new ArrayList<>());
+    }
+    this.getEvents().add(event);
+  }
 }

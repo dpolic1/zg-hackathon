@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name = "event_categories")
 public class EventCategory {
 
   @Id
@@ -19,6 +20,13 @@ public class EventCategory {
 
   private String name;
 
-  @OneToMany
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "eventCategories")
   private List<Event> events;
+
+  public void addChildToList(Event event) {
+    if (this.getEvents() == null) {
+      this.setEvents(new ArrayList<>());
+    }
+    this.getEvents().add(event);
+  }
 }

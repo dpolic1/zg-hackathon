@@ -8,15 +8,18 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 @RequiredArgsConstructor
 public class UserCreation {
 
   private final UserRepository userRepository;
   private final UserResourceService userResourceService;
+  private final ExcelParser excelParser;
 
   @EventListener(ApplicationReadyEvent.class)
-  public void createBasicUsers() {
+  public void createBasicUsers() throws IOException {
     if (!userRepository.existsByUsername("user")) {
       UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
       userRegisterRequest.setFirstName("user");
@@ -38,5 +41,7 @@ public class UserCreation {
     System.out.println("User with basic role -> Username: user, Password: user");
     System.out.println("User with admin role -> Username: admin, Password: admin");
     System.out.println("Swagger available at: http://localhost:8080/swagger-ui/index.html");
+
+    excelParser.parseExcel();
   }
 }
