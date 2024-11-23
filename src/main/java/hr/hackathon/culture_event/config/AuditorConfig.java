@@ -23,6 +23,9 @@ public class AuditorConfig implements AuditorAware<String> {
       return Optional.empty();
     }
 
+    if(auth.getPrincipal() instanceof String) {
+      return Optional.of((String) auth.getPrincipal());
+    }
     User user = (User) auth.getPrincipal();
     return Optional.of(user.getUsername());
   }

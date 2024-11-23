@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -43,6 +44,7 @@ public class UserResourceService {
     user.setFirstName("Test");
     user.setLastName("User");
     user.setUsername("user" + System.currentTimeMillis());
+    user.setEmail("testemail" + System.currentTimeMillis() + "@test.com");
     user.setPassword(bCryptPasswordEncoder.encode("password"));
     user.setRoles(Set.of(Role.ROLE_USER));
     return createLoginResponse(userRepository.save(user));
