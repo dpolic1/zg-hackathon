@@ -39,14 +39,3 @@ VALUES ('Koncert'),
        ('Skup'),
        ('Predavanje'),
        ('Performans');
-
-CREATE TABLE organizer_types
-(
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);
-
-INSERT INTO organizer_types (name)
-VALUES ('Gradska ustanova'),
-       ('Korisnik koji koristi prostorije gradskih ustanova'),
-       ('Drugo');
