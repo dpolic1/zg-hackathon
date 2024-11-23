@@ -1,7 +1,5 @@
-package hr.hackathon.culture_event.feature.event_category;
+package hr.hackathon.culture_event.feature.event_type;
 
-import hr.hackathon.culture_event.feature.event_type.EventType;
-import hr.hackathon.culture_event.feature.event_type.EventTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package hr.hackathon.culture_event.feature.event_category;
+package hr.hackathon.culture_event.feature.event_type;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
