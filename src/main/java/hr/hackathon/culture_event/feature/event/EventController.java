@@ -1,5 +1,6 @@
 package hr.hackathon.culture_event.feature.event;
 
+import hr.hackathon.culture_event.config.AuditorConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class EventController {
 
   private final EventResourceService eventResourceService;
+  private final AuditorConfig auditorConfig;
 
   @GetMapping()
   public List<EventResponse> findAll() {
@@ -49,6 +51,17 @@ public class EventController {
       } catch (NumberFormatException ignored) {
       }
     }
-    return eventResourceService.searchEventsWithFilters(query, fromDateEpoch, toDateEpoch, maxPrice, category);
+    return eventResourceService.searchEventsWithFilters(
+        query, fromDateEpoch, toDateEpoch, maxPrice, category);
+  }
+
+  @PostMapping("/favorite/{id}")
+  public void favoriteEvent(@PathVariable Long id) {
+    eventResourceService.favoriteEvent(id, auditorConfig.getCurrentAuditor().get());
+  }
+
+  @GetMapping("/favorites")
+  public List<EventResponse> getFavoriteEvents() {
+    return eventResourceService.getFavoriteEvents(auditorConfig.getCurrentAuditor().get());
   }
 }

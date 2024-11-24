@@ -1,12 +1,15 @@
 package hr.hackathon.culture_event.feature.user;
 
 import hr.hackathon.culture_event.feature.creation_audit.CreationAudit;
+import hr.hackathon.culture_event.feature.event.Event;
 import hr.hackathon.culture_event.feature.user.role.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -34,4 +37,11 @@ public class User extends CreationAudit {
   @Column(name = "role", nullable = false)
   @Enumerated(EnumType.STRING)
   private Set<Role> roles = new HashSet<>();
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "user_favorite_events",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "event_id"))
+  private List<Event> favoriteEvents = new ArrayList<>();
 }

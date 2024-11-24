@@ -37,7 +37,6 @@ public class SecurityConfiguration {
           "event-categories/**",
           "events",
           "events/search",
-          "events/searchSimple",
           "swagger-ui/**",
           "v3/api-docs/**");
   public static final List<String> ADMIN_ENDPOINTS = List.of("example/test-admin");
@@ -62,7 +61,7 @@ public class SecurityConfiguration {
             login ->
                 login
                     .defaultSuccessUrl("/web", true)
-                    .failureUrl("/login.html?error=true")) // TODO: change later
+                    .failureUrl("/login.html?error=true"))
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(
             httpSecurityExceptionHandlingConfigurer ->

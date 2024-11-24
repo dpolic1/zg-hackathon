@@ -1,5 +1,8 @@
 package hr.hackathon.culture_event.feature.event;
 
+import hr.hackathon.culture_event.feature.user.User;
+import hr.hackathon.culture_event.feature.user.UserRepository;
+import hr.hackathon.culture_event.feature.user.UserResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -7,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +22,8 @@ public class EventResourceService {
 
   private final EventRepository eventRepository;
   private final EventMapper eventMapper;
+  private final UserResourceService userResourceService;
+  private final UserRepository userRepository;
 
   public List<EventResponse> findAll() {
     List<Event> events = eventRepository.findAllLimit50();
@@ -39,12 +45,15 @@ public class EventResourceService {
       Double maxPrice,
       String category) {
 
-    String[] categoryNames = category.split(",");
-    List<Long> categoryIds =
-        Arrays.stream(categoryNames).map(Long::parseLong).collect(Collectors.toList());
-
-    List<Event> searchedEvents =
-        eventRepository.searchEventsWithFilters(searchTerm, maxPrice, categoryIds);
+    List<Event> searchedEvents;
+    List<Long> categoryIds;
+    if (category != null) {
+      String[] categoryNames = category.split(",");
+      categoryIds = Arrays.stream(categoryNames).map(Long::parseLong).collect(Collectors.toList());
+      searchedEvents = eventRepository.searchEventsWithFilters(searchTerm, maxPrice, categoryIds);
+    } else {
+      searchedEvents = eventRepository.searchEventsWithFilters(searchTerm, maxPrice, null);
+    }
 
     return searchedEvents.stream()
         .filter(
@@ -59,5 +68,28 @@ public class EventResourceService {
             })
         .map(eventMapper::toResponse)
         .toList();
+  }
+
+  public void favoriteEvent(Long id, String username) {
+    Event event =
+        eventRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+    User user = userResourceService.findByUsername(username);
+    if (user.getFavoriteEvents() == null) {
+      user.setFavoriteEvents(new ArrayList<>());
+    }
+    if (user.getFavoriteEvents().contains(event)) {
+      return;
+    }
+    user.getFavoriteEvents().add(event);
+    userRepository.save(user);
+  }
+
+  public List<EventResponse> getFavoriteEvents(String username) {
+    User user = userResourceService.findByUsername(username);
+    return user.getFavoriteEvents().stream().map(eventMapper::toResponse).toList();
   }
 }
