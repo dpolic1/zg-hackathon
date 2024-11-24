@@ -55,11 +55,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 /*            (:fromDate IS NULL OR e.start_date >= :fromDate) AND
             (:toDate IS NULL OR e.start_date <= :toDate) AND*/
             (:maxPrice IS NULL OR e.price <= :maxPrice) AND
-            (:categoryId IS NULL OR ec.category_id = :categoryId)
+            (:categoryIds IS NULL OR ec.category_id IN :categoryIds)
     """,
       nativeQuery = true)
   List<Event> searchEventsWithFilters(
       @Param("searchTerm") String searchTerm,
       @Param("maxPrice") Double maxPrice,
-      @Param("categoryId") Long categoryId);
+      @Param("categoryIds") List<Long> categoryIds);
 }

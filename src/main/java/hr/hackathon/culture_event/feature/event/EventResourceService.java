@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,10 +37,14 @@ public class EventResourceService {
       LocalDateTime fromDate,
       LocalDateTime toDate,
       Double maxPrice,
-      Long categoryId) {
+      String category) {
+
+    String[] categoryNames = category.split(",");
+    List<Long> categoryIds =
+        Arrays.stream(categoryNames).map(Long::parseLong).collect(Collectors.toList());
 
     List<Event> searchedEvents =
-        eventRepository.searchEventsWithFilters(searchTerm, maxPrice, categoryId);
+        eventRepository.searchEventsWithFilters(searchTerm, maxPrice, categoryIds);
 
     return searchedEvents.stream()
         .filter(

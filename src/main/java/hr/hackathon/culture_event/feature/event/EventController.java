@@ -31,7 +31,7 @@ public class EventController {
       @RequestParam(value = "fromDate", required = false) Long fromDate,
       @RequestParam(value = "toDate", required = false) Long toDate,
       @RequestParam(value = "price", required = false) String price,
-      @RequestParam(value = "category", required = false) Long categoryId) {
+      @RequestParam(value = "category", required = false) String category) {
     LocalDateTime fromDateEpoch =
         fromDate != null
             ? LocalDateTime.ofInstant(Instant.ofEpochMilli(fromDate), ZoneId.systemDefault())
@@ -49,6 +49,6 @@ public class EventController {
       } catch (NumberFormatException ignored) {
       }
     }
-    return eventResourceService.searchEventsWithFilters(query, fromDateEpoch, toDateEpoch, maxPrice, categoryId);
+    return eventResourceService.searchEventsWithFilters(query, fromDateEpoch, toDateEpoch, maxPrice, category);
   }
 }
