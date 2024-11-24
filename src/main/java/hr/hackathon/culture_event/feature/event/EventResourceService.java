@@ -52,7 +52,7 @@ public class EventResourceService {
       categoryIds = Arrays.stream(categoryNames).map(Long::parseLong).collect(Collectors.toList());
       searchedEvents = eventRepository.searchEventsWithFilters(searchTerm, maxPrice, categoryIds);
     } else {
-      searchedEvents = eventRepository.searchEventsWithFilters(searchTerm, maxPrice, null);
+      searchedEvents = eventRepository.searchEventsWithFilters(searchTerm, maxPrice, List.of());
     }
 
     return searchedEvents.stream()
