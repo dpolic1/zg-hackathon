@@ -2,6 +2,7 @@ package hr.hackathon.culture_event.config;
 
 import hr.hackathon.culture_event.jwt_token.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,9 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
   public static final List<String> UNAUTHENTICATED_ENDPOINTS =
       List.of(
@@ -77,7 +81,7 @@ public class SecurityConfiguration {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(
-        List.of("http://localhost:5173", "http://localhost:8080")); // Adjust the allowed origins
+        List.of("http://localhost:5173", "http://localhost:8080", frontendUrl)); // Adjust the allowed origins
     configuration.setAllowedMethods(
         Arrays.asList(
             HttpMethod.GET.name(),
