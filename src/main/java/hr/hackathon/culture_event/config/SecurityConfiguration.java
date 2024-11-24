@@ -37,6 +37,8 @@ public class SecurityConfiguration {
           "event-categories/**",
           "events",
           "events/search",
+          "events/favorite",
+          "events/favorites",
           "swagger-ui/**",
           "v3/api-docs/**");
   public static final List<String> ADMIN_ENDPOINTS = List.of("example/test-admin");

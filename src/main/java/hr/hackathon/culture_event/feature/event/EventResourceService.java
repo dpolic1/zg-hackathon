@@ -3,6 +3,7 @@ package hr.hackathon.culture_event.feature.event;
 import hr.hackathon.culture_event.feature.user.User;
 import hr.hackathon.culture_event.feature.user.UserRepository;
 import hr.hackathon.culture_event.feature.user.UserResourceService;
+import hr.hackathon.culture_event.jwt_token.JwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class EventResourceService {
   private final EventMapper eventMapper;
   private final UserResourceService userResourceService;
   private final UserRepository userRepository;
+  private final JwtTokenService jwtTokenService;
 
   public List<EventResponse> findAll() {
     List<Event> events = eventRepository.findAllLimit50();
@@ -70,14 +72,17 @@ public class EventResourceService {
         .toList();
   }
 
-  public void favoriteEvent(Long id, String username) {
+  public void favoriteEvent(Long id, String token) {
     Event event =
         eventRepository
             .findById(id)
             .orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-    User user = userResourceService.findByUsername(username);
+    if(token == null){
+      return;
+    }
+    User user = jwtTokenService.getUserFromJwt(token.substring(7));
     if (user.getFavoriteEvents() == null) {
       user.setFavoriteEvents(new ArrayList<>());
     }
@@ -88,8 +93,11 @@ public class EventResourceService {
     userRepository.save(user);
   }
 
-  public List<EventResponse> getFavoriteEvents(String username) {
-    User user = userResourceService.findByUsername(username);
+  public List<EventResponse> getFavoriteEvents(String token) {
+    if(token == null){
+      return new ArrayList<>();
+    }
+    User user = jwtTokenService.getUserFromJwt(token.substring(7));
     return user.getFavoriteEvents().stream().map(eventMapper::toResponse).toList();
   }
 }

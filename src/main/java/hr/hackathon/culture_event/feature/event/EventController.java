@@ -55,13 +55,13 @@ public class EventController {
         query, fromDateEpoch, toDateEpoch, maxPrice, category);
   }
 
-  @PostMapping("/favorite/{id}")
-  public void favoriteEvent(@PathVariable Long id) {
-    eventResourceService.favoriteEvent(id, auditorConfig.getCurrentAuditor().get());
+  @PostMapping("/favorite")
+  public void favoriteEvent(@RequestBody FavoriteEventRequest request, @RequestHeader("Authorization") String token) {
+    eventResourceService.favoriteEvent(request.getId(), token);
   }
 
   @GetMapping("/favorites")
-  public List<EventResponse> getFavoriteEvents() {
-    return eventResourceService.getFavoriteEvents(auditorConfig.getCurrentAuditor().get());
+  public List<EventResponse> getFavoriteEvents(@RequestHeader("Authorization") String token) {
+    return eventResourceService.getFavoriteEvents(token);
   }
 }
